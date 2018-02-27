@@ -1,0 +1,42 @@
+<h1>
+  <%= @user.username %> details
+</h1>
+
+<hr>
+
+<dl>
+
+  <dt>
+    ID
+  </dt>
+  <dd>
+    <%= @user.id %>
+  </dd>
+
+
+  <dt>
+    Username
+  </dt>
+  <dd>
+    <%= @user.username %>
+  </dd>
+
+
+  <dt>
+    E-mail
+  </dt>
+  <dd>
+    <%= @user.email %>
+  </dd>
+</dl>
+<% Photo.where('user_id' => @user.id).each do |photo| %>
+<p><img src="<%= photo.image %>"></p>
+<% end %>
+
+
+
+<hr>
+
+<a href="/users">
+  Go back
+</a>

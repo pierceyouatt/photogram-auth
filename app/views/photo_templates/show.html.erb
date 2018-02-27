@@ -1,0 +1,93 @@
+<h1>
+  Photo #<%= @photo.id %> details
+</h1>
+<% if @photo.user_id == current_user.id %>
+<a href="/photos/<%= @photo.id %>/edit">
+  Edit photo
+</a>
+<% end %>
+<hr>
+
+<dl>
+
+  <dt>
+    Caption
+  </dt>
+  <dd>
+    <%= @photo.caption %>
+  </dd>
+
+
+  <dt>
+    Image
+  </dt>
+  <dd>
+    <%= @photo.image %>
+  </dd>
+
+
+  <dt>
+    User
+  </dt>
+  <dd>
+    <%= @photo.user_id %>
+  </dd>
+
+
+  <dt>
+    Created at
+  </dt>
+  <dd>
+    <%= time_ago_in_words(@photo.created_at) %> ago
+  </dd>
+
+  <dt>
+    Updated at
+  </dt>
+  <dd>
+    <%= time_ago_in_words(@photo.updated_at) %> ago
+  </dd>
+</dl>
+<% if Like.where(photo_id: @photo.id).pluck(:user_id).include? current_user.id %>
+<a href="/delete_like/<%= @photo.id %>"><i class="fas fa-heart"></i></a>
+<% else %>
+<form action="/create_like" method="post">
+  <!-- Label and input for user_id -->
+  <input type="hidden" name="user_id" class="form-control" value="<%= current_user.id %>">
+  <!-- Label and input for photo_id -->
+  <input type="hidden" name="photo_id" class="form-control" value="<%= @photo.id %>">
+  <button>
+<i class="far fa-heart"></i>
+  </button>
+</form>
+<% end %>
+<% if @photo.user_id == current_user.id %>
+<a href="/delete_photo/<%= @photo.id %>">
+  Delete photo
+</a>
+<% end %>
+
+<form action="/create_comment" method="post">
+  <!-- Label and input for photo_id -->
+    <input type="hidden" name="photo_id" class="form-control" value="<%= @photo.id %>">
+
+  <!-- Label and input for body -->
+  <div class="form-group">
+    <label for="body">
+      Body
+    </label>
+    <textarea id="body" name="body" class="form-control" rows="3"><%= @comment.try(:body) %></textarea>
+  </div>
+
+  <!-- Label and input for user_id -->
+    <input type="hidden" name="user_id" class="form-control" value="<%= current_user.id %>">
+
+  <button class="btn btn-block btn-outline-secondary">
+    Create comment
+  </button>
+</form>
+<hr>
+
+<a href="/photos">
+  Go back
+</a>

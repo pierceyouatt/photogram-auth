@@ -56,7 +56,7 @@ group :development, :test do
   gem 'pry-rails'
   gem 'grade_runner', github: 'firstdraft/grade_runner'
   gem 'web_git', github: 'firstdraft/web_git'
-  gem 'database_cleaner'
+  gem 'database_cleaner', '1.6.1'
 end
 
 group :development do
