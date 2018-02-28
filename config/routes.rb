@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   # CREATE
   get("/comments/new", { :controller => "comments", :action => "new_form" })
   post("/create_comment", { :controller => "comments", :action => "create_row" })
+  post("/photos_comment", { :controller => "comments", :action => "create_photos_row" })
 
   # READ
   get("/comments", { :controller => "comments", :action => "index" })

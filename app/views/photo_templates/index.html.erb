@@ -3,7 +3,7 @@
 </h1>
 
 <a href="/photos/new">
-  Add a new photo
+  Add Photo
 </a>
 
 <hr>
@@ -39,6 +39,10 @@
     </th>
 
     <th>
+      Comments
+    </th>
+
+    <th>
     </th>
   </tr>
 
@@ -55,12 +59,12 @@
 
 
     <td>
-      <%= photo.image %>
+      <img src="<%= photo.image %>">
     </td>
 
 
     <td>
-      <%= photo.user_id %>
+      <%= User.find_by(id: photo.user_id).username %>
     </td>
 
 
@@ -71,7 +75,11 @@
     <td>
       <%= time_ago_in_words(photo.updated_at) %> ago
     </td>
-
+    <td>
+      <% Comment.where(photo_id: photo.id).each do |comment| %>
+      <p><%= comment.body %> - <%= User.find_by(id: comment.user_id).username %></p>
+      <% end %>
+    </td>
     <td>
       <a href="/photos/<%= photo.id %>">
         Show details
@@ -80,3 +88,30 @@
   </tr>
   <% end %>
 </table>
+
+<form action="/photos_comment" method="post">
+  <div class="form-group">
+    <label for="photo_id">
+      Photo
+    </label>
+    <input type="text" id="photo_id" name="photo_id" class="form-control" value="2">
+  </div>
+
+  <!-- Label and input for body -->
+  <div class="form-group">
+    <label for="body">
+      Body
+    </label>
+    <input id="body" name="body" class="form-control" rows="3" placeholder='Add a comment...'>
+  </div>
+
+  <!-- Label and input for user_id -->
+    <input type="hidden" name="user_id" class="form-control" value="<%= current_user.id %>">
+
+  <button class="btn btn-block btn-outline-secondary">
+    Add Comment
+  </button>
+</form>
+<% Comment.all.pluck(:body).each do |comment| %>
+  <p><%= comment %></p>
+<% end %>

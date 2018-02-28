@@ -1,6 +1,6 @@
 class LikesController < ApplicationController
   def mine
-    @likes = Like.where('user_id' => current_user.id)
+    @likes = Like.where(user_id: current_user.id)
 
     render("like_templates/mine.html.erb")
   end

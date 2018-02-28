@@ -24,7 +24,10 @@
       Photo
     </th>
 
-
+    <th>
+      Caption
+    </th>
+    
     <th>
       Created at
     </th>
@@ -50,9 +53,11 @@
 
 
     <td>
-      <%= like.photo_id %>
+      <img src="<%= Photo.find_by(id: like.photo_id).image %>">
     </td>
-
+    <td>
+      <%= Photo.find_by(id: like.photo_id).caption %>
+    </td>
 
     <td>
       <%= time_ago_in_words(like.created_at) %> ago
