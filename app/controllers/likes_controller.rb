@@ -34,7 +34,7 @@ class LikesController < ApplicationController
     if @like.valid?
       @like.save
 
-      redirect_to("/likes", :notice => "Like created successfully.")
+      redirect_to("/photos", :notice => "Like created successfully.")
     else
       render("like_templates/new_form.html.erb")
     end

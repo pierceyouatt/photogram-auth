@@ -52,16 +52,21 @@
         </a>
 
         <div>
-            <form action="/create_like" method="post">
+            <% if Like.where(photo_id: photo.id).pluck(:user_id).include? current_user.id %>
+              <a href="/delete_like/<%= photo.id %>" class="btn btn-link pull-right">
+                <i class="fa fa-fw fa-heart"></i> Unlike
+              </a>
+            <% else %>
+              <form action="/create_like" method="post">
               <input type="hidden" name="photo_id" value="<%= photo.id %>">
               <input type="hidden" name="user_id" value="<%= current_user.id %>">
-                <small class="text-muted">be the first to like this</small>
+
               <button class="btn btn-link pull-right">
                 <i class="fa fa-fw fa-heart-o"></i>
                 Like
               </button>
-            </form>
-
+              </form>
+            <% end %>
           <ul class="media-list">
               <li class="media">
                 <div class="media-body">
@@ -101,6 +106,18 @@
             Add Comment
           </button>
         </form>
+        <% if photo.user_id == current_user.id %>
+        <div class="btn-group btn-group-justified">
+          <a href="/photos/<%= photo.id %>/edit" class="btn btn-warning">
+            <i class="fa fa-fw fa-edit"></i>
+              Edit
+          </a>
+          <a href="/delete_photo/<%= photo.id %>" class="btn btn-danger" rel="nofollow">
+            <i class="fa fa-fw fa-trash-o"></i>
+              Delete
+          </a>
+        </div> <!-- btn-group btn-group-justified -->
+        <% end %>
       </div>
     </div>
     <% end %>

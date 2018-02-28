@@ -1,77 +1,109 @@
+<head>
+  <meta charset="utf-8">
+  <title>PhotogramAuth</title>
+
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.5/paper/bootstrap.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+  <style>
+    /* Only necessary if you are using navbar-fixed-top */
+    body {
+      padding-top: 80px;
+    }
+  </style>
+
+  <link rel="stylesheet" media="all" href="/assets/application-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css" />
+  <script src="/assets/application-f0d2b228b6051b147e7ecd3ea0c7e693d21597e2d7495a5c1fa5507ad696f08a.js"></script>
+  <meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="yPO+CeiCoV9gzvVt1J4Z9U23eFMD07wcxxLgELjNq4MgIBwRsue+XWSYR5RvHG5MHfcJ/6aH8fFnv5JudkmeDA==" />
+
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+</head>
+
 <h1>
   My likes
 </h1>
 
-<a href="/likes/new">
-  Add a new like
-</a>
-
 <hr>
 
-<table class="table">
-  <tr>
-    <th>
-      ID
-    </th>
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <% @likes.each do |like| %>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          <a href="/users/<%= Photo.find_by(id: like.photo_id).user_id %>"><%= User.find_by(id: Photo.find_by(id: like.photo_id).user_id).username %></a>
+          <small>
+            <%= Photo.find_by(id: like.photo_id).created_at %>
+          </small>
+        </h3>
+      </div>
 
+      <div class="panel-body">
+        <a href="/photos/<%= like.photo_id %>">
+          <img src="<%= Photo.find_by(id: like.photo_id).image %>" class="img-responsive">
+        </a>
 
-    <th>
-      User
-    </th>
-
-
-    <th>
-      Photo
-    </th>
-
-    <th>
-      Caption
-    </th>
-    
-    <th>
-      Created at
-    </th>
-
-    <th>
-      Updated at
-    </th>
-
-    <th>
-    </th>
-  </tr>
-
-  <% @likes.each do |like| %>
-  <tr>
-    <td>
-      <%= like.id %>
-    </td>
-
-
-    <td>
-      <%= like.user_id %>
-    </td>
-
-
-    <td>
-      <img src="<%= Photo.find_by(id: like.photo_id).image %>">
-    </td>
-    <td>
-      <%= Photo.find_by(id: like.photo_id).caption %>
-    </td>
-
-    <td>
-      <%= time_ago_in_words(like.created_at) %> ago
-    </td>
-
-    <td>
-      <%= time_ago_in_words(like.updated_at) %> ago
-    </td>
-
-    <td>
-      <a href="/likes/<%= like.id %>">
-        Show details
-      </a>
-    </td>
-  </tr>
-  <% end %>
-</table>
+        <div>
+              <a href="/delete_like/<%= like.photo_id %>" class="btn btn-link pull-right">
+                <i class="fa fa-fw fa-heart"></i> Unlike
+              </a>
+          <ul class="media-list">
+              <li class="media">
+                <div class="media-body">
+                  <h6 class="media-heading">
+                    <a href="/users/<%= Photo.find_by(id: like.photo_id).user_id %>"><%= User.find_by(id: Photo.find_by(id: like.photo_id).user_id).username %></a>
+                    <small>
+                      <%= Photo.find_by(id: like.photo_id).updated_at %>
+                    </small>
+                  </h6>
+                  <%= Photo.find_by(id: like.photo_id).caption %>
+                </div> <!-- media-body -->
+              </li>
+              <% Comment.where(photo_id: like.photo_id).each do |comment| %>
+              <li class="media">
+                <div class="media-body">
+                  <h6 class="media-heading">
+                    <a href="/users/<%= comment.user_id %>"><%= User.find_by(id: comment.user_id).username %></a>
+                    <small>
+                      <%= comment.created_at %>
+                    </small>
+                  </h6>
+                  <%= comment.body %>
+                </div> <!-- media-body -->
+              </li>
+              <% end %>
+          </ul>
+        </div>
+        <form action="/photos_comment" method="post">
+            <input type="hidden" name="photo_id" class="form-control" value="<%= like.photo_id %>">
+          <!-- Label and input for body -->
+          <div class="form-group">
+            <input id="body" name="body" class="form-control" rows="3" placeholder='Add a comment...'>
+          </div>
+                    <!-- Label and input for user_id -->
+            <input type="hidden" name="user_id" class="form-control" value="<%= current_user.id %>">
+          <button class="btn btn-block btn-outline-secondary">
+            Add Comment
+          </button>
+        </form>
+        <% if Photo.find_by(id: like.photo_id).user_id == current_user.id %>
+        <div class="btn-group btn-group-justified">
+          <a href="/photos/<%= like.photo_id %>/edit" class="btn btn-warning">
+            <i class="fa fa-fw fa-edit"></i>
+              Edit
+          </a>
+          <a href="/delete_photo/<%= like.photo_id %>" class="btn btn-danger" rel="nofollow">
+            <i class="fa fa-fw fa-trash-o"></i>
+              Delete
+          </a>
+        </div> <!-- btn-group btn-group-justified -->
+        <% end %>
+      </div>
+    </div>
+    <% end %>
+  </div>
+</div>
