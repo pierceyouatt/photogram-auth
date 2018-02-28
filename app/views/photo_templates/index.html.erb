@@ -1,3 +1,28 @@
+<head>
+  <meta charset="utf-8">
+  <title>PhotogramAuth</title>
+
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.5/paper/bootstrap.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+  <style>
+    /* Only necessary if you are using navbar-fixed-top */
+    body {
+      padding-top: 80px;
+    }
+  </style>
+
+  <link rel="stylesheet" media="all" href="/assets/application-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css" />
+  <script src="/assets/application-f0d2b228b6051b147e7ecd3ea0c7e693d21597e2d7495a5c1fa5507ad696f08a.js"></script>
+  <meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="yPO+CeiCoV9gzvVt1J4Z9U23eFMD07wcxxLgELjNq4MgIBwRsue+XWSYR5RvHG5MHfcJ/6aH8fFnv5JudkmeDA==" />
+
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+</head>
+
 <h1>
   All photos
 </h1>
@@ -8,110 +33,76 @@
 
 <hr>
 
-<table class="table">
-  <tr>
-    <th>
-      ID
-    </th>
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <% @photos.each do |photo| %>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          <a href="/users/<%= photo.user_id %>"><%= User.find_by(id: photo.user_id).username %></a>
+          <small>
+            <%= photo.created_at %>
+          </small>
+        </h3>
+      </div>
 
+      <div class="panel-body">
+        <a href="/photos/<%= photo.id %>">
+          <img src="<%= photo.image %>" class="img-responsive">
+        </a>
 
-    <th>
-      Caption
-    </th>
+        <div>
+            <form action="/create_like" method="post">
+              <input type="hidden" name="photo_id" value="<%= photo.id %>">
+              <input type="hidden" name="user_id" value="<%= current_user.id %>">
+                <small class="text-muted">be the first to like this</small>
+              <button class="btn btn-link pull-right">
+                <i class="fa fa-fw fa-heart-o"></i>
+                Like
+              </button>
+            </form>
 
-
-    <th>
-      Image
-    </th>
-
-
-    <th>
-      User
-    </th>
-
-
-    <th>
-      Created at
-    </th>
-
-    <th>
-      Updated at
-    </th>
-
-    <th>
-      Comments
-    </th>
-
-    <th>
-    </th>
-  </tr>
-
-  <% @photos.each do |photo| %>
-  <tr>
-    <td>
-      <%= photo.id %>
-    </td>
-
-
-    <td>
-      <%= photo.caption %>
-    </td>
-
-
-    <td>
-      <img src="<%= photo.image %>">
-    </td>
-
-
-    <td>
-      <%= User.find_by(id: photo.user_id).username %>
-    </td>
-
-
-    <td>
-      <%= time_ago_in_words(photo.created_at) %> ago
-    </td>
-
-    <td>
-      <%= time_ago_in_words(photo.updated_at) %> ago
-    </td>
-    <td>
-      <% Comment.where(photo_id: photo.id).each do |comment| %>
-      <p><%= comment.body %> - <%= User.find_by(id: comment.user_id).username %></p>
-      <% end %>
-    </td>
-    <td>
-      <a href="/photos/<%= photo.id %>">
-        Show details
-      </a>
-    </td>
-  </tr>
-  <% end %>
-</table>
-
-<form action="/photos_comment" method="post">
-  <div class="form-group">
-    <label for="photo_id">
-      Photo
-    </label>
-    <input type="text" id="photo_id" name="photo_id" class="form-control" value="2">
+          <ul class="media-list">
+              <li class="media">
+                <div class="media-body">
+                  <h6 class="media-heading">
+                    <a href="/users/<%= photo.user_id %>"><%= User.find_by(id: photo.user_id).username %></a>
+                    <small>
+                      <%= photo.updated_at %>
+                    </small>
+                  </h6>
+                  <%= photo.caption %>
+                </div> <!-- media-body -->
+              </li>
+              <% Comment.where(photo_id: photo.id).each do |comment| %>
+              <li class="media">
+                <div class="media-body">
+                  <h6 class="media-heading">
+                    <a href="/users/<%= comment.user_id %>"><%= User.find_by(id: comment.user_id).username %></a>
+                    <small>
+                      <%= comment.created_at %>
+                    </small>
+                  </h6>
+                  <%= comment.body %>
+                </div> <!-- media-body -->
+              </li>
+              <% end %>
+          </ul>
+        </div>
+        <form action="/photos_comment" method="post">
+            <input type="hidden" name="photo_id" class="form-control" value="<%= photo.id %>">
+          <!-- Label and input for body -->
+          <div class="form-group">
+            <input id="body" name="body" class="form-control" rows="3" placeholder='Add a comment...'>
+          </div>
+                    <!-- Label and input for user_id -->
+            <input type="hidden" name="user_id" class="form-control" value="<%= current_user.id %>">
+          <button class="btn btn-block btn-outline-secondary">
+            Add Comment
+          </button>
+        </form>
+      </div>
+    </div>
+    <% end %>
   </div>
-
-  <!-- Label and input for body -->
-  <div class="form-group">
-    <label for="body">
-      Body
-    </label>
-    <input id="body" name="body" class="form-control" rows="3" placeholder='Add a comment...'>
-  </div>
-
-  <!-- Label and input for user_id -->
-    <input type="hidden" name="user_id" class="form-control" value="<%= current_user.id %>">
-
-  <button class="btn btn-block btn-outline-secondary">
-    Add Comment
-  </button>
-</form>
-<% Comment.all.pluck(:body).each do |comment| %>
-  <p><%= comment %></p>
-<% end %>
+</div>
