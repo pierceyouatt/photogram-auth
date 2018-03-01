@@ -41,7 +41,7 @@
         <h3 class="panel-title">
           <a href="/users/<%= photo.user_id %>"><%= User.find_by(id: photo.user_id).username %></a>
           <small>
-            <%= photo.created_at %>
+            <%= time_ago_in_words(photo.created_at) %>
           </small>
         </h3>
       </div>
@@ -73,7 +73,7 @@
                   <h6 class="media-heading">
                     <a href="/users/<%= photo.user_id %>"><%= User.find_by(id: photo.user_id).username %></a>
                     <small>
-                      <%= photo.updated_at %>
+                      <%= time_ago_in_words(photo.updated_at) %>
                     </small>
                   </h6>
                   <%= photo.caption %>
@@ -85,7 +85,7 @@
                   <h6 class="media-heading">
                     <a href="/users/<%= comment.user_id %>"><%= User.find_by(id: comment.user_id).username %></a>
                     <small>
-                      <%= comment.created_at %>
+                      <%= time_ago_in_words(comment.created_at) %>
                     </small>
                   </h6>
                   <%= comment.body %>

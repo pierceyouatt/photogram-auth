@@ -18,23 +18,23 @@ class UsersController < ApplicationController
   end
 
   def update_row
-    @photo = Photo.find(params.fetch("id_to_modify"))
+    @user = User.find(params.fetch(current_user.id))
 
 
-    @photo.caption = params.fetch("caption")
+    @user.email = params.fetch("user[email]")
 
-    @photo.image = params.fetch("image")
+    @user.username = params.fetch("user[username]")
 
-    @photo.user_id = params.fetch("user_id")
+    @user.password = params.fetch("user[password]")
 
 
 
-    if @photo.valid?
-      @photo.save
+    if @user.valid?
+      @user.save
 
-      redirect_to("/photos/#{@photo.id}", :notice => "Photo updated successfully.")
+      redirect_to("/photos", :notice => "User updated successfully.")
     else
-      render("photo_templates/edit_form.html.erb")
+      render("/users/edit_form.html.erb")
     end
 
   end
